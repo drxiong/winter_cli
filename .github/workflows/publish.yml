@@ -20,6 +20,10 @@ jobs:
 
       - name: Debug npm version
         run: npm --version
+      - name: Set up Git
+      run: |
+        git config --global user.email "1763303455@qq.com"
+        git config --global user.name "xiongyan_winter"
       - name: Install semver
         run: npm install semver
       - name: Auto version increment
