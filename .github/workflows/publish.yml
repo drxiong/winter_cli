@@ -22,74 +22,31 @@ jobs:
         run: npm --version
       - name: Install semver
         run: npm install semver
-      # - name: Setup SSH
-      #   run: |
-      #     mkdir -p ~/.ssh
-      #     echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-      #     ls -l ~/.ssh/id_rsa
-      #     # ssh -i ~/.ssh/id_rsa https://github.com/drxiong
-      #     chmod 600 ~/.ssh/id_rsa
-      #     eval $(ssh-agent)
-      #     ssh-add ~/.ssh/id_rsa
-      #     ssh-keyscan github.com >> ~/.ssh/known_hosts
-      # - name: Setup SSH
-      #   run: |
-      #     chmod +x setup-ssh.sh
-      #     /home/runner/work/winter_cli/winter_cli/setup-ssh.sh
-      #     eval $(ssh-agent)
-      #     ssh-add ~/.ssh/id_rsa
-      # - name: Debug GitHub token
-      #   run: echo ${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}
-      # - name: Debug Git config
-      #   run: git config --list
-      # - name: Setup SSH
-      #   run: |
-      #     mkdir -p ~/.ssh
-      #     echo "${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}" > ~/.ssh/id_rsa
-      #     chmod 600 ~/.ssh/id_rsa
-      #     ssh-keyscan github.com >> ~/.ssh/known_hosts
+
       - name: set ssh key # 临时设置 ssh key
         run: |
-          mkdir -p /home/runner/.ssh/
-          echo "${{secrets.RUNNER_TOKEN}}" > /home/runner/.ssh/id_rsa
-          cat /home/runner/.ssh/id_rsa
-          chmod 600 /home/runner/.ssh/id_rsa
-          ssh-keyscan "github.com" >> /home/runner/.ssh/known_hosts
-          cat /home/runner/.ssh/known_hosts
+          mkdir -p ~/.ssh/
+          echo "${{secrets.RUNNER_TOKEN}}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan "github.com" >> ~/.ssh/known_hosts
+
       - name: Set up Git
         run: |
           git config --global user.email "1763303455@qq.com"
           git config --global user.name "drxiong"
 
-      # - name: Push to GitHub
-      #   uses: ad-m/github-push-action@master
-      #   with:
-      #     GITHUB_TOKEN: ${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}
       - name: Auto version increment
         env:
           NODE_AUTH_TOKEN: ${{ secrets.RUNNER_TOKEN }}
         run: |
-          current_version=$(node -p "require('/home/runner/work/winter_cli/winter_cli/package.json').version")
+          current_version=$(node -p "require('~/work/winter_cli/winter_cli/package.json').version")
           new_version=$(node -p "const semver = require('semver'); semver.inc('$current_version', 'patch')")
-          # git config --global user.email "1763303455@qq.com"
-          # git config --global user.name "drxiong"
           npm version --no-git-tag-version patch
           git add .
           git commit -m "Auto version increment"
-          # ssh -T git@github.com:drxiong/winter_cli.git
           git push git@github.com:drxiong/winter_cli.git
-          # git push origin main
-          # git push --follow-tags
+        
 
-      # - name: Set up Git
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}
-      #   run: |
-      #     git config --global user.email "1763303455@qq.com"
-      #     git config --global user.name "drxiong"
-      #     git add .
-      #     git commit -m "Auto version increment"
-      #     git push origin HEAD:main
       - name: Check environment variable
         run: |
           if [ -z "${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}" ]; then
@@ -97,19 +54,7 @@ jobs:
           else
             echo "WINTER_CLI_NPM_AUTH_TOKEN is set."
           fi
-      - name: Install modules
-        run: npm install
-        env:
-          NPM_CONFIG_AUTO_INSTALL_PEERS: "true"
-          NPM_CONFIG_STRICT_PEER_DEPENDENCIES: "false"
-          NPM_CONFIG_REGISTRY: "https://registry.npmjs.org/"
-          NPM_TOKEN: ${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}
-      # - name: Ensure clean working directory
-      #   run: |
-      #     git diff --exit-code || (git add . && git commit -m "Auto commit before publish" && git push origin publish ) || true
-      # - name: Build and test
-      #   run: npm run build
-      # --no-git-checks 是不检查git工作目录状态，可能会造成还有代码没有提交但是发包了，需要慎用，但是目前不加这个一直报错说工作目录不干净，所以待解决
+
       - name: Publish package
         run: npm set registry https://registry.npmjs.org/ && npm publish --access public --no-git-checks
         env:
