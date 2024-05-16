@@ -1,0 +1,50 @@
+name: Publish Smarty-ui-vite To Npm
+
+on:
+  push:
+    branches: [publish]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: npm/action-setup@v2.1.0
+        with:
+          version: 7.2.1
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          registry-url: 'https://registry.npmjs.org/'
+          always-auth: true
+      - name: Debug .npmrc
+        run: cat .npmrc
+
+      - name: Debug npm version
+        run: npm --version
+      - name: Check environment variable
+        run: |
+          if [ -z "${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}" ]; then
+            echo "WINTER_CLI_NPM_AUTH_TOKEN is not set."
+          else
+            echo "WINTER_CLI_NPM_AUTH_TOKEN is set."
+          fi
+      - name: Install modules
+        run: npm install
+        env:
+          NPM_CONFIG_AUTO_INSTALL_PEERS: "true"
+          NPM_CONFIG_STRICT_PEER_DEPENDENCIES: "false"
+          NPM_CONFIG_REGISTRY: "https://registry.npmjs.org/"
+          NPM_TOKEN: ${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}
+      # - name: Ensure clean working directory
+      #   run: |
+      #     git diff --exit-code || (git add . && git commit -m "Auto commit before publish" && git push origin publish ) || true
+      # - name: Build and test
+      #   run: npm run build
+      # --no-git-checks 是不检查git工作目录状态，可能会造成还有代码没有提交但是发包了，需要慎用，但是目前不加这个一直报错说工作目录不干净，所以待解决
+      - name: Publish package
+        run: npm set registry https://registry.npmjs.org/ && npm publish --access public --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.WINTER_CLI_NPM_AUTH_TOKEN}}
+
