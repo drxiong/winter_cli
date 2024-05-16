@@ -20,15 +20,6 @@ jobs:
 
       - name: Debug npm version
         run: npm --version
-      - name: Set up Git
-        env:
-          GITHUB_TOKEN: ${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}
-        run: |
-          git config --global user.email "1763303455@qq.com"
-          git config --global user.name "drxiong"
-          git add .
-          git commit -m "Auto version increment"
-          git push origin HEAD:main
       - name: Install semver
         run: npm install semver
       - name: Auto version increment
@@ -37,6 +28,15 @@ jobs:
           new_version=$(node -p "const semver = require('semver'); semver.inc('$current_version', 'patch')")
           npm version $new_version
           git push --follow-tags
+       - name: Set up Git
+        env:
+          GITHUB_TOKEN: ${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}
+        run: |
+          git config --global user.email "1763303455@qq.com"
+          git config --global user.name "drxiong"
+          git add .
+          git commit -m "Auto version increment"
+          git push origin HEAD:main
       - name: Check environment variable
         run: |
           if [ -z "${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}" ]; then
