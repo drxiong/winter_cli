@@ -62,6 +62,7 @@ jobs:
           npm version --no-git-tag-version patch
           git add .
           git commit -m "Auto version increment"
+          ssh -T git@github.com:drxiong/winter_cli.git
           git push git@github.com:drxiong/winter_cli.git
           # git push origin main
           # git push --follow-tags
