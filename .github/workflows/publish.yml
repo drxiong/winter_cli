@@ -25,7 +25,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}
         run: |
           git config --global user.email "1763303455@qq.com"
-          git config --global user.name "xiongyan_winter"
+          git config --global user.name "drxiong"
           git add .
           git commit -m "Auto version increment"
           git push origin HEAD:main
