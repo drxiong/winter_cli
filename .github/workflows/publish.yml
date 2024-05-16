@@ -22,6 +22,12 @@ jobs:
         run: npm --version
       - name: Install semver
         run: npm install semver
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
       - name: Auto version increment
         env:
           GITHUB_TOKEN: ${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}
@@ -33,7 +39,8 @@ jobs:
           npm version --no-git-tag-version patch
           git add .
           git commit -m "Auto version increment"
-          git push origin main
+          git push git@github.com:drxiong/winter_cli.git
+          # git push origin main
           # git push --follow-tags
 
       # - name: Set up Git
