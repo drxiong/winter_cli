@@ -31,7 +31,6 @@ jobs:
           git config --global user.email "1763303455@qq.com"
           git config --global user.name "drxiong"
           npm version --no-git-tag-version patch
-          cat $new_version
           git add .
           git commit -m "Auto version increment"
           git push origin main
