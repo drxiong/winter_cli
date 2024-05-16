@@ -20,6 +20,8 @@ jobs:
 
       - name: Debug npm version
         run: npm --version
+      - name: Install semver
+        run: npm install semver
       - name: Auto version increment
         run: |
           current_version=$(node -p "require('/home/runner/work/winter_cli/winter_cli/package.json').version")
