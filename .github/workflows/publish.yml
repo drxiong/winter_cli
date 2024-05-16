@@ -42,12 +42,18 @@ jobs:
       #   run: echo ${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}
       # - name: Debug Git config
       #   run: git config --list
-      - name: Setup SSH
+      # - name: Setup SSH
+      #   run: |
+      #     mkdir -p ~/.ssh
+      #     echo "${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}" > ~/.ssh/id_rsa
+      #     chmod 600 ~/.ssh/id_rsa
+      #     ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - name: set ssh key # 临时设置 ssh key
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}" > ~/.ssh/id_rsa
+          mkdir -p ~/.ssh/
+          echo "${{secrets.WINTER_CLI_NPM_AUTH_TOKEN}}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          ssh-keyscan "127.0.0.1" >> ~/.ssh/known_hosts
       - name: Set up Git
         run: |
           git config --global user.email "1763303455@qq.com"
