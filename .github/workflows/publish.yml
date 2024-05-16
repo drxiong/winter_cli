@@ -30,7 +30,8 @@ jobs:
           new_version=$(node -p "const semver = require('semver'); semver.inc('$current_version', 'patch')")
           git config --global user.email "1763303455@qq.com"
           git config --global user.name "drxiong"
-          npm version $new_version
+          npm version --no-git-tag-version patch
+          cat $new_version
           git add .
           git commit -m "Auto version increment"
           git push origin main
