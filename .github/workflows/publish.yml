@@ -1,16 +1,17 @@
 name: Publish Smarty-ui-vite To Npm
 
+# push main分支的时候执行
 on:
   push:
     branches: [main]
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # 一个环境，相当于一台机器
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4  # 拉取代码
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4  # 设置node版本
         with:
           node-version: '18'
           registry-url: 'https://registry.npmjs.org/'
@@ -20,23 +21,25 @@ jobs:
 
       - name: Debug npm version
         run: npm --version
-      - name: Install semver
+
+      - name: Install semver  # 安装设置版本的依赖
         run: npm install semver
 
-      - name: set ssh key # 临时设置 ssh key
+      - name: set ssh key # 临时设置 ssh key 【RUNNER_TOKEN需要和github上的私钥名对应】 【1.家目录下新建.ssh文件，2.将github上的私钥写入.ssh/id_rsa，3.修改权限，4.收集 github.com 的公钥信息，并将这些信息追加到 /home/runner/.ssh/known_hosts 文件中】
         run: |
-          mkdir -p /home/runner/.ssh/
+          mkdir -p /home/runner/.ssh/  
           echo "${{secrets.RUNNER_TOKEN}}" > /home/runner/.ssh/id_rsa
           chmod 600 /home/runner/.ssh/id_rsa
           ssh-keyscan "github.com" >> /home/runner/.ssh/known_hosts
+          
 
       - name: Set up Git
         run: |
           git config --global user.email "1763303455@qq.com"
           git config --global user.name "drxiong"
 
-      - name: Auto version increment
-        env:
+      - name: Auto version increment # 获取当前的version, 并修改版本的修订号，然后将修改后的package.json提交到github上
+        env: # 这里注意commit的描述里面有 [skip ci] 这个不能少，是为了避免在这一次提交过程继续触发这个脚本，导致陷入循环的
           NODE_AUTH_TOKEN: ${{ secrets.RUNNER_TOKEN }}
         run: |
           current_version=$(node -p "require('/home/runner/work/winter_cli/winter_cli/package.json').version")
@@ -55,7 +58,7 @@ jobs:
             echo "WINTER_CLI_NPM_AUTH_TOKEN is set."
           fi
 
-      - name: Publish package
+      - name: Publish package # 发包，这里的WINTER_CLI_NPM_AUTH_TOKEN需要分别在npm和github上设置
         run: npm set registry https://registry.npmjs.org/ && npm publish --access public --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{secrets.WINTER_CLI_NPM_AUTH_TOKEN}}
