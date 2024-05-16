@@ -7,24 +7,14 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    # steps:
-    #   - uses: actions/checkout@v4
-    #   - name: Setup Node.js
-    #     uses: actions/setup-node@v4
-    #     with:
-    #       node-version: '18'
-    #       registry-url: 'https://registry.npmjs.org/'
-    #       always-auth: true
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Setup Node
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
-
-    - name: Use Node.js
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          registry-url: 'https://registry.npmjs.org/'
+          always-auth: true
       - name: Debug .npmrc
         run: cat .npmrc
 
@@ -32,20 +22,20 @@ jobs:
         run: npm --version
       - name: Install semver
         run: npm install semver
-      # - name: Setup SSH
-      #   run: |
-      #     mkdir -p ~/.ssh
-      #     echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-      #     chmod 600 ~/.ssh/id_rsa
-      #     eval $(ssh-agent)
-      #     ssh-add ~/.ssh/id_rsa
-      #     ssh-keyscan github.com >> ~/.ssh/known_hosts
       - name: Setup SSH
         run: |
-          chmod +x setup-ssh.sh
-          /home/runner/work/winter_cli/winter_cli/setup-ssh.sh
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
           eval $(ssh-agent)
           ssh-add ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+      # - name: Setup SSH
+      #   run: |
+      #     chmod +x setup-ssh.sh
+      #     /home/runner/work/winter_cli/winter_cli/setup-ssh.sh
+      #     eval $(ssh-agent)
+      #     ssh-add ~/.ssh/id_rsa
       - name: Auto version increment
         env:
           GITHUB_TOKEN: ${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}
