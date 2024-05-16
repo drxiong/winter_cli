@@ -22,7 +22,7 @@ jobs:
         run: npm --version
       - name: Auto version increment
         run: |
-          current_version=$(node -p "require('./package.json').version")
+          current_version=$(node -p "require('/home/runner/work/winter_cli/winter_cli//package.json').version")
           new_version=$(node -p "const semver = require('semver'); semver.inc('$current_version', 'patch')")
           npm version $new_version
           git push --follow-tags
