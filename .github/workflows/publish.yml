@@ -22,30 +22,40 @@ jobs:
         run: npm --version
       - name: Install semver
         run: npm install semver
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          ls -l ~/.ssh/id_rsa
-          # ssh -i ~/.ssh/id_rsa https://github.com/drxiong
-          chmod 600 ~/.ssh/id_rsa
-          eval $(ssh-agent)
-          ssh-add ~/.ssh/id_rsa
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
+      # - name: Setup SSH
+      #   run: |
+      #     mkdir -p ~/.ssh
+      #     echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+      #     ls -l ~/.ssh/id_rsa
+      #     # ssh -i ~/.ssh/id_rsa https://github.com/drxiong
+      #     chmod 600 ~/.ssh/id_rsa
+      #     eval $(ssh-agent)
+      #     ssh-add ~/.ssh/id_rsa
+      #     ssh-keyscan github.com >> ~/.ssh/known_hosts
       # - name: Setup SSH
       #   run: |
       #     chmod +x setup-ssh.sh
       #     /home/runner/work/winter_cli/winter_cli/setup-ssh.sh
       #     eval $(ssh-agent)
       #     ssh-add ~/.ssh/id_rsa
+
+      - name: Set up Git
+        run: |
+          git config --global user.email "1763303455@qq.com"
+          git config --global user.name "drxiong"
+
+      - name: Push to GitHub
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}
       - name: Auto version increment
         env:
           GITHUB_TOKEN: ${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}
         run: |
           current_version=$(node -p "require('/home/runner/work/winter_cli/winter_cli/package.json').version")
           new_version=$(node -p "const semver = require('semver'); semver.inc('$current_version', 'patch')")
-          git config --global user.email "1763303455@qq.com"
-          git config --global user.name "drxiong"
+          # git config --global user.email "1763303455@qq.com"
+          # git config --global user.name "drxiong"
           npm version --no-git-tag-version patch
           git add .
           git commit -m "Auto version increment"
