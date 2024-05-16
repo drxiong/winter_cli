@@ -40,6 +40,8 @@ jobs:
       #     ssh-add ~/.ssh/id_rsa
       - name: Debug GitHub token
         run: echo ${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}
+      - name: Debug Git config
+        run: git config --list
       - name: Set up Git
         run: |
           git config --global user.email "1763303455@qq.com"
