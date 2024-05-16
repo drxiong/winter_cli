@@ -51,7 +51,7 @@ jobs:
       - name: set ssh key # 临时设置 ssh key
         run: |
           mkdir -p /home/runner/.ssh/
-          echo "${{secrets.WINTER_CLI_NPM_AUTH_TOKEN}}" > /home/runner/.ssh/id_rsa
+          echo "${{secrets.RUNNER_TOKEN}}" > /home/runner/.ssh/id_rsa
           cat /home/runner/.ssh/id_rsa
           chmod 600 /home/runner/.ssh/id_rsa
           ssh-keyscan "github.com" >> /home/runner/.ssh/known_hosts
@@ -67,9 +67,8 @@ jobs:
       #     GITHUB_TOKEN: ${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}
       - name: Auto version increment
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.RUNNER_TOKEN }}
         run: |
-          echo ===== $pwd
           current_version=$(node -p "require('/home/runner/work/winter_cli/winter_cli/package.json').version")
           new_version=$(node -p "const semver = require('semver'); semver.inc('$current_version', 'patch')")
           # git config --global user.email "1763303455@qq.com"
