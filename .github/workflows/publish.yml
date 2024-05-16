@@ -28,7 +28,7 @@ jobs:
           new_version=$(node -p "const semver = require('semver'); semver.inc('$current_version', 'patch')")
           npm version $new_version
           git push --follow-tags
-       - name: Set up Git
+      - name: Set up Git
         env:
           GITHUB_TOKEN: ${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}
         run: |
