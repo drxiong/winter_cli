@@ -33,7 +33,7 @@ jobs:
           npm version $new_version
           git add .
           git commit -m "Auto version increment"
-          git push origin HEAD:main
+          git push origin main
           # git push --follow-tags
 
       # - name: Set up Git
