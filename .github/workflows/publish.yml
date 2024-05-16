@@ -21,6 +21,8 @@ jobs:
       - name: Debug npm version
         run: npm --version
       - name: Set up Git
+        env:
+          GITHUB_TOKEN: ${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}
         run: |
           git config --global user.email "1763303455@qq.com"
           git config --global user.name "xiongyan_winter"
