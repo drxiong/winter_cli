@@ -1,8 +1,7 @@
 name: Publish Smarty-ui-vite To Npm
 
 on:
-  pull_request:
-    type: [closed]
+  push:
     branches: [main]
 
 jobs:
@@ -44,7 +43,7 @@ jobs:
           new_version=$(node -p "const semver = require('semver'); semver.inc('$current_version', 'patch')")
           npm version --no-git-tag-version patch
           git add .
-          git commit -m "Auto version increment"
+          git commit -m "Auto version increment [skip ci]"
           git push git@github.com:drxiong/winter_cli.git
         
 
