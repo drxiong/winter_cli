@@ -1,7 +1,8 @@
 name: Publish Smarty-ui-vite To Npm
 
 on:
-  merge:
+  pull_request:
+    type: [closed]
     branches: [main]
 
 jobs:
