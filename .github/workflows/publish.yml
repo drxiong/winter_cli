@@ -42,6 +42,12 @@ jobs:
       #   run: echo ${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}
       # - name: Debug Git config
       #   run: git config --list
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
       - name: Set up Git
         run: |
           git config --global user.email "1763303455@qq.com"
@@ -62,7 +68,7 @@ jobs:
           npm version --no-git-tag-version patch
           git add .
           git commit -m "Auto version increment"
-          ssh -T git@github.com:drxiong/winter_cli.git
+          # ssh -T git@github.com:drxiong/winter_cli.git
           git push git@github.com:drxiong/winter_cli.git
           # git push origin main
           # git push --follow-tags
