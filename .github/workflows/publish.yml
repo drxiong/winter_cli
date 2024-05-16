@@ -38,19 +38,19 @@ jobs:
       #     /home/runner/work/winter_cli/winter_cli/setup-ssh.sh
       #     eval $(ssh-agent)
       #     ssh-add ~/.ssh/id_rsa
-      - name: Debug GitHub token
-        run: echo ${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}
-      - name: Debug Git config
-        run: git config --list
+      # - name: Debug GitHub token
+      #   run: echo ${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}
+      # - name: Debug Git config
+      #   run: git config --list
       - name: Set up Git
         run: |
           git config --global user.email "1763303455@qq.com"
           git config --global user.name "drxiong"
 
-      - name: Push to GitHub
-        uses: ad-m/github-push-action@master
-        with:
-          GITHUB_TOKEN: ${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}
+      # - name: Push to GitHub
+      #   uses: ad-m/github-push-action@master
+      #   with:
+      #     GITHUB_TOKEN: ${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}
       - name: Auto version increment
         env:
           NODE_AUTH_TOKEN: ${{ secrets.WINTER_CLI_NPM_AUTH_TOKEN }}
