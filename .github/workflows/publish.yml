@@ -25,10 +25,10 @@ jobs:
 
       - name: set ssh key # 临时设置 ssh key
         run: |
-          mkdir -p ~/.ssh/
-          echo "${{secrets.RUNNER_TOKEN}}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan "github.com" >> ~/.ssh/known_hosts
+          mkdir -p /home/runner/.ssh/
+          echo "${{secrets.RUNNER_TOKEN}}" > /home/runner/.ssh/id_rsa
+          chmod 600 /home/runner/.ssh/id_rsa
+          ssh-keyscan "github.com" >> /home/runner/.ssh/known_hosts
 
       - name: Set up Git
         run: |
@@ -39,7 +39,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.RUNNER_TOKEN }}
         run: |
-          current_version=$(node -p "require('~/work/winter_cli/winter_cli/package.json').version")
+          current_version=$(node -p "require('/home/runner/work/winter_cli/winter_cli/package.json').version")
           new_version=$(node -p "const semver = require('semver'); semver.inc('$current_version', 'patch')")
           npm version --no-git-tag-version patch
           git add .
