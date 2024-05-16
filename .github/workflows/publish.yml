@@ -24,7 +24,7 @@ jobs:
       - name: Install semver
         run: npm install semver
 
-      - name: set ssh key # 临时设置 ssh key
+      - name: set ssh key
         run: |
           mkdir -p ~/.ssh/
           echo "${{secrets.RUNNER_TOKEN}}" > ~/.ssh/id_rsa
